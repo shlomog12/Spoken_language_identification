@@ -15,14 +15,14 @@ from cnn_model_definition import Convolutional_Language_Identification
 
 
 
-TRAINED_MODEL_PATH = 'trained_models/Convolutional_Speaker_Identification_Log_Softmax_Model-epoch_101.pth'
+TRAINED_MODEL_PATH = 'trained_models/Convolutional_Speaker_Identification_Log_Softmax_Model-epoch_301.pth'
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = Convolutional_Language_Identification().to(device)
-model.load_state_dict(torch.load(TRAINED_MODEL_PATH))
+model.load_state_dict(torch.load(TRAINED_MODEL_PATH, map_location=torch.device('cpu')))
 # model = torch.load(TRAINED_MODEL_PATH, map_location='cpu')
 
 final_accuracy = np.array([0, 0, 0], dtype=float)
-count_test = 0
+final_f_score = np.array([0, 0], dtype=float)
 ROOT_PATH = ''
 ALL_DATA_PATH = ROOT_PATH+'data/pickles/total_data.pkl'
 PATH_DATA_3 = ROOT_PATH +'data/pickles/db_3_langs.pkl'
@@ -38,28 +38,31 @@ size_of_test = len(y_test)
 batch_size = 16
 
 
-
+def get_f_score(mini_y_test, preds):
+    f_list = [f1_score(mini_y_test, preds, average="macro"), f1_score(mini_y_test, preds, average="micro")]
+    return f_list
 
 
 with torch.no_grad():
     model.eval()
+
     test_epoch_idx = np.random.permutation(size_of_test)
-    for b in range(int(np.ceil(size_of_test/batch_size))):
+    num_test = int(np.ceil(size_of_test/batch_size))
+    for b in range(num_test):
         test_batch_loc = test_epoch_idx[(b * batch_size):((b + 1) * batch_size)]
         mini_x_test, mini_y_test = x_test[test_batch_loc], y_test[test_batch_loc]
         proba_pred_y = model(mini_x_test.to(device))
-        list_of_pred_y = f.get_pred_y(proba_pred_y)
-        count_test +=1
+        preds = f.get_pred_y(proba_pred_y)
+        f_score = get_f_score(mini_y_test, preds)
         accuracy_list = []
         for k in [1, 5, 10]:
             accuracy_list += [f.top_k_accuracy(k, proba_pred_y, mini_y_test)]
         final_accuracy += np.array(accuracy_list)
-    final_accuracy /= count_test
-    # f1_score = f1_score(mini_y_test, proba_pred_y)
-    # print(f1_score)
+        final_f_score += np.array(f_score)
+    final_accuracy /= num_test
+    final_f_score /=num_test
 new_final_accuracy = [round(x * 100, 3) for x in list(final_accuracy)]
-results_df = pd.DataFrame([], columns=['top_1_test_acc', 'top_5_test_acc', 'top_10_test_acc'])
-results_df.loc[len(results_df)] = new_final_accuracy
+results_df = pd.DataFrame([], columns=['top_1_test_acc', 'top_5_test_acc', 'top_10_test_acc', 'f_score_macro', 'f_score_micro'])
+results_df.loc[len(results_df)] = new_final_accuracy + [final_f_score[0],final_f_score[1]]
 results_df.to_excel(dir_of_res_path + '/final_report.xlsx')
-
 
