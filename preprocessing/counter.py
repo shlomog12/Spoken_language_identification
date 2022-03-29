@@ -1,27 +1,52 @@
-
-
-# import matplotlib
-# matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import numpy as np
-
-
-
-
-cnt = {'ab': 59, 'ar': 10000, 'as': 436, 'br': 1004, 'ca': 10000, 'cnh': 310, 'cs': 7558, 'cv': 1023, 'cy': 9899, 'de': 10000, 'dv': 4612, 'el': 2626, 'en': 10000, 'eo': 10000, 'es': 10000, 'et': 6979, 'eu': 10000, 'fa': 6973, 'fi': 531, 'fr': 10000, 'fy-NL': 5842, 'ga-IE': 386, 'hi': 136, 'hsb': 1849, 'hu': 4385, 'ia': 2230, 'id': 1734, 'it': 10000, 'ja': 977, 'ka': 1887, 'kab': 10000, 'ky': 2696, 'lg': 1629, 'lt': 1195, 'lv': 1439, 'mn': 3367, 'mt': 2476, 'nl': 10000, 'or': 599, 'pa-IN': 261, 'pl': 9271, 'pt': 7652, 'rm-sursilv': 2461, 'rm-vallader': 1254, 'ro': 3292, 'ru': 10000, 'rw': 10000, 'sah': 2715, 'sl': 2027, 'sv-SE': 1384, 'ta': 2198, 'th': 3176, 'tr': 1758, 'tt': 9692, 'uk': 5915, 'vi': 162, 'vot': 6, 'zh-CN': 10000, 'zh-HK': 5658, 'zh-TW': 2364}
-
-cnt_sorted ={k: v for k, v in sorted(cnt.items(), key=lambda item: item[1])}
-
-
-
-
-
-
-
+# !pip install datasets
+import datasets
+from tqdm import tqdm
+from datasets import list_datasets, load_dataset, list_metrics, load_metric
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Bring some raw data.
+counter = {'ab': 22, 'ar': 14227, 'as': 270, 'br': 2780, 'ca': 285584, 'cnh': 807, 'cs': 5655, 'cv': 931, 'cy': 6839, 'de': 246525, 'dv': 2680, 'el': 2316, 'en': 1001, 'eo': 1001, 'es': 1001, 'et': 1001, 'eu': 1001, 'fa': 1001, 'fi': 460, 'fr': 1001, 'fy-NL': 1001, 'ga-IE': 541, 'hi': 157, 'hsb': 808, 'hu': 1001, 'ia': 1001, 'id': 1001, 'it': 1001, 'ja': 722, 'ka': 1001, 'kab': 1001, 'ky': 1001, 'lg': 1001, 'lt': 931, 'lv': 1001, 'mn': 1001, 'mt': 1001, 'nl': 1001, 'or': 388, 'pa-IN': 211, 'pl': 1001, 'pt': 1001, 'rm-sursilv': 1001, 'rm-vallader': 574, 'ro': 1001, 'ru': 1001, 'rw': 1001, 'sah': 1001, 'sl': 1001, 'sv-SE': 1001, 'ta': 1001, 'th': 1001, 'tr': 1001, 'tt': 1001, 'uk': 1001, 'vi': 221, 'vot': 3, 'zh-CN': 1001, 'zh-HK': 1001, 'zh-TW': 1001}
+languages = []
+for k,v in counter.items():
+  languages.append(k)
+
+
+
+def sum_data_by_lang(lang):
+  window = 48000
+  step = 32000
+  dataset = load_dataset("common_voice", lang, split="train", streaming=True)
+  dataset = dataset.cast_column("audio", datasets.Audio(sampling_rate=16_000))
+  dataset_iter = iter(dataset)
+  data = []
+  k = 1
+  for sample in dataset_iter:
+    array = sample["audio"]["array"]
+    array = array[44:]
+    pointer = 0
+    while pointer + window < len(array):
+      curr = array[pointer:pointer+window]
+      data.append(curr)
+      k += 1
+      if k>= 10000:
+        return k
+      pointer += step
+
+  return k
+
+
+
+counter = {}
+for lang in tqdm(languages):
+  s = sum_data_by_lang(lang)
+  print(f'{lang} = {s}')
+  counter[lang] = s
+
+
+cnt_sorted ={k: v for k, v in sorted(counter.items(), key=lambda item: item[1])}
+
+
+
 frequencies = cnt_sorted.values()
 
 # In my original code I create a series and run on that,

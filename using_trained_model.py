@@ -15,7 +15,7 @@ from cnn_model_definition import Convolutional_Language_Identification
 
 
 
-TRAINED_MODEL_PATH = 'trained_models/Convolutional_Speaker_Identification_Log_Softmax_Model-epoch_301.pth'
+TRAINED_MODEL_PATH = 'trained_models/Convolutional_Speaker_Identification_Log_Softmax_Model-epoch_101_124.pth'
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = Convolutional_Language_Identification().to(device)
 model.load_state_dict(torch.load(TRAINED_MODEL_PATH, map_location=torch.device('cpu')))

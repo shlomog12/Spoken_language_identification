@@ -2,9 +2,6 @@ import pickle
 import torch
 
 
-
-
-
 class Data:
 
 

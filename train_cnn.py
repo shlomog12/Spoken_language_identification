@@ -11,7 +11,6 @@ matplotlib.use('Agg')
 from Data import Data
 import matplotlib.pyplot as plt
 
-
 # def top_k_accuracy(k, proba_pred_y, mini_y_test):
 #     top_k_pred = proba_pred_y.argsort(axis=1)[:, -k:]
 #     final_pred = [False] * len(mini_y_test)
