@@ -1,4 +1,6 @@
-results
+
 .idea
-data/pickles
+
 trained_models
+/data/
+/results/

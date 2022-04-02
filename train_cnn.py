@@ -131,6 +131,7 @@ for e in range(epoch):
     res_file.write('\r----------------------------\r\r')
     res_file.write(epoch_report)
 
+
 res_file.close()
 
 # results_df.to_excel(dir_of_res_path + '/final_report.xlsx')
