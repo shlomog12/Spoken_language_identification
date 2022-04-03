@@ -67,7 +67,7 @@ size_of_val = len(x_val)
 
 # all epoch run on all data of train
 model.train()
-for e in range(epoch):
+for e in range(1,epoch+1):
     train_loss, val_loss = 0, 0
     count_train = 0
 

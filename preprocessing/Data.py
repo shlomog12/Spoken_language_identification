@@ -4,6 +4,7 @@ import pickle
 import os
 from sklearn.model_selection import train_test_split
 
+swi = {'et': 0, 'cs': 1, 'pt': 2, 'pl': 3, 'tt': 4, 'cy': 5, 'ar': 6, 'ca': 7, 'de': 8, 'es': 9, 'eu': 10, 'en': 11, 'fr': 12, 'eo': 13, 'it': 14, 'kab': 15, 'rw': 16, 'nl': 17, 'ru': 18, 'zh-CN': 19, 'br': 20, 'cv': 21, 'lt': 22, 'rm-vallader': 23, 'sv-SE': 24, 'lv': 25, 'lg': 26, 'id': 27, 'tr': 28, 'hsb': 29, 'ka': 30, 'sl': 31, 'ta': 32, 'ia': 33, 'zh-TW': 34, 'rm-sursilv': 35, 'mt': 36, 'el': 37, 'dv': 38, 'hu': 39, 'mn': 40, 'ro': 41, 'th': 42, 'sah': 43, 'ky': 44, 'zh-HK': 45, 'fy-NL': 46, 'uk': 47, 'fa': 48}
 
 class Data:
 
@@ -11,15 +12,15 @@ class Data:
         self.init_define()
 
     def init_define(self):
-        self.path_to_data = '../data'
+        self.path_to_data = './data'
         # self.path_to_data = '/content/drive/MyDrive/Spoken-language-identification/data'
         self.train_path = f'{self.path_to_data}/sub_pickles/train/'
         self.test_path = f'{self.path_to_data}/sub_pickles/test/'
         self.limit_train = 5000
         self.limit_test = 1250
         self.NUM_LANGUAGES = 49
-        self.switcher = {}
-
+        # self.switcher = {}
+        self.switcher = swi
 
     def init_data_test(self):
         pks_of_test = self.get_packs_tags(self.test_path)
@@ -44,7 +45,7 @@ class Data:
         print('after to tensor')
 
     def get_num_by_tag(self, tag):
-        self.switcher[tag] = self.switcher.get(tag, len(self.switcher))
+        # self.switcher[tag] = self.switcher.get(tag, len(self.switcher))
         return self.switcher[tag]
 
     def get_packs_tags(self, path):

@@ -3,7 +3,7 @@ The code is based on : https://github.com/a-nagrani/VGGVox/issues/1
 ******************************************************************"""
 
 from torch import nn
-NUM_OF_LANGUAGES = 47
+NUM_OF_LANGUAGES = 49
 import torch
 
 DROP_OUT = 0.5
