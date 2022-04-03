@@ -3,8 +3,7 @@ import glob
 import pickle
 import os
 from sklearn.model_selection import train_test_split
-train_packs = []
-test_packs = []
+
 NUM_LANGUAGES = 49
 
 
@@ -29,7 +28,6 @@ def get_packs_tags(path):
         fname = os.path.basename(file)
         tag = fname.split('_')[0]
         path_to_current = path + fname
-
         with open(path_to_current, 'rb') as f:
             pack = pickle.load(f)
             packs.append((pack, tag))
@@ -70,9 +68,15 @@ print(f' len(X_test) = {len(X_test)}, len(Y_test)= {len(Y_test)} ')
 
 
 data = [X_train, Y_train, weights, X_val, Y_val, X_test, Y_test]
-path = f'{path_to_data}/pickles/total_big.pkl'
+path = f'{path_to_data}/pickles/total_big2.pkl'
+
+
 with open(path, 'wb') as f:
+    print('save')
     pickle.dump(data, f)
+    print('finish')
+
+print('finish - 81')
 
 
 

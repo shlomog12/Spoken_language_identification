@@ -7,10 +7,8 @@ import numpy as np
 from sklearn.metrics import f1_score
 
 import math_func as f
-from Data import Data
+from preprocessing.Data import Data
 from cnn_model_definition import Convolutional_Language_Identification
-
-
 
 
 
@@ -31,7 +29,8 @@ now_time = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
 dir_of_res_path = TEST_RESULTS_PATH + now_time   # same to loger
 if not os.path.isdir(dir_of_res_path):
     os.makedirs(dir_of_res_path)
-data = Data(ALL_DATA_PATH)
+data = Data()
+data.init_data_test()
 x_test = data.get_x_test()
 y_test = data.get_y_test()
 size_of_test = len(y_test)

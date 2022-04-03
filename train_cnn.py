@@ -8,7 +8,7 @@ import pandas as pd
 from datetime import datetime
 import matplotlib
 matplotlib.use('Agg')
-from Data import Data
+from preprocessing.Data import Data
 import matplotlib.pyplot as plt
 
 # def top_k_accuracy(k, proba_pred_y, mini_y_test):
@@ -28,8 +28,7 @@ import matplotlib.pyplot as plt
 
 ROOT_PATH = ''
 # ROOT_PATH = '/content/drive/MyDrive/Spoken-language-identification/'
-DATA_3_LANG_PATH = ROOT_PATH+'data/pickles/db_3_langs.pkl'
-ALL_DATA_PATH = ROOT_PATH+'data/pickles/total_data.pkl'
+ALL_DATA_PATH = ROOT_PATH+'data/pickles/total_big.pkl'
 TRAINING_RESULTS_PATH = ROOT_PATH+'results/'
 
 print('Start training:')
@@ -58,12 +57,13 @@ file_txt = ['Date and time :  ' + now_time,'Learning Rate : ' + str(learning_rat
 for s in file_txt:
     res_file.write('\r----------------------------\r\r')
     res_file.write(s)
-
-data = Data(ALL_DATA_PATH)
-x_train, y_train, x_val, y_val, x_test, y_test = data.get_data()
+print('init data')
+data = Data()
+data.init_data_train()
+print('init x,y')
+x_train, y_train, x_val, y_val, weights_lang = data.get_data()
 size_of_train = len(x_train)
 size_of_val = len(x_val)
-size_of_test = len(x_test)
 
 # all epoch run on all data of train
 model.train()
@@ -119,7 +119,7 @@ for e in range(epoch):
         # final_accuracy /= count_test
         # ************* TEST **********************************8
 
-    if 0 == (e % 100):
+    if 0 == (e % 50):
         torch.save(model.state_dict(), dir_of_res_path + "/" + model.to_string() + str(e + 1) + ".pth")
 
     results_df = pd.DataFrame([], columns=['train_loss', 'val_loss'])
@@ -130,7 +130,6 @@ for e in range(epoch):
     epoch_report = "Epoch : " + str(e + 1) + " | Train_Loss: " + str(train_loss) + ' , Val_Loss: ' + str(val_loss)
     res_file.write('\r----------------------------\r\r')
     res_file.write(epoch_report)
-
 
 res_file.close()
 
