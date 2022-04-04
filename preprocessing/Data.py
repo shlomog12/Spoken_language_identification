@@ -63,9 +63,13 @@ class Data:
         amounts = [0] * self.NUM_LANGUAGES
         X = []
         Y = []
+        # black_list = ['br', 'cv', 'it', 'sl', 'ia', 'mt']
         for pack in packs:
             tensors, tag = pack[0], pack[1]
             num = self.get_num_by_tag(tag)
+            # if tag in black_list:
+            #     amounts[num] = 1
+            #     continue
             if amounts[num] == limit:
                 continue
             for tensor in tensors:

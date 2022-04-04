@@ -29,6 +29,7 @@ def normal_arr(arr):
         return arr
     for i in range(len(arr)):
         arr[i] = arr[i] / sum
+        arr[i] = round(arr[i], 4)
     return arr
 
 def top_k_accuracy(k, proba_pred_y, mini_y_test):
@@ -71,6 +72,6 @@ def get_top_k_res(mat_res,k ,rep):
         arr2 = []
         for j in reversed(range(len(top_k))):
             m = top_k[j]
-            arr2.append((rep[m],arr[m]))
+            arr2.append((rep[m],round(arr[m], 4)))
         new_mat.append(arr2)
     return new_mat

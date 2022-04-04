@@ -11,13 +11,13 @@ from preprocessing.Data import Data
 from cnn_model_definition import Convolutional_Language_Identification
 
 
-TRAINED_MODEL_PATH = 'trained_models/Convolutional_Speaker_Identification_Log_Softmax_Model-epoch_21_128.pth'
+TRAINED_MODEL_PATH = 'trained_models/Convolutional_Speaker_Identification_Log_Softmax_Model-epoch_141_128.pth'
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = Convolutional_Language_Identification().to(device)
 model.load_state_dict(torch.load(TRAINED_MODEL_PATH, map_location=torch.device('cpu')))
 # model = torch.load(TRAINED_MODEL_PATH, map_location='cpu')
 
-final_accuracy = np.array([0, 0, 0], dtype=float)
+final_accuracy = np.array([0, 0, 0, 0], dtype=float)
 final_f_score = np.array([0, 0], dtype=float)
 ROOT_PATH = ''
 ALL_DATA_PATH = ROOT_PATH+'data/pickles/total_data.pkl'
@@ -57,14 +57,14 @@ with torch.no_grad():
 
         f_score = get_f_score(mini_y_test, preds)
         accuracy_list = []
-        for k in [1, 5, 10]:
+        for k in [1, 3, 5, 10]:
             accuracy_list += [f.top_k_accuracy(k, proba_pred_y, mini_y_test)]
         final_accuracy += np.array(accuracy_list)
         final_f_score += np.array(f_score)
     final_accuracy /= num_test
     final_f_score /=num_test
 new_final_accuracy = [round(x * 100, 3) for x in list(final_accuracy)]
-results_df = pd.DataFrame([], columns=['top_1_test_acc', 'top_5_test_acc', 'top_10_test_acc', 'f_score_macro', 'f_score_micro'])
+results_df = pd.DataFrame([], columns=['top_1_test_acc', 'top_3_test_acc', 'top_5_test_acc', 'top_10_test_acc', 'f_score_macro', 'f_score_micro'])
 results_df.loc[len(results_df)] = new_final_accuracy + [final_f_score[0],final_f_score[1]]
 results_df.to_excel(dir_of_res_path + '/final_report.xlsx')
 
