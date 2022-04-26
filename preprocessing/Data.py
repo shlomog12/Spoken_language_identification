@@ -4,7 +4,11 @@ import pickle
 import os
 from sklearn.model_selection import train_test_split
 
-swi = {'et': 0, 'cs': 1, 'pt': 2, 'pl': 3, 'tt': 4, 'cy': 5, 'ar': 6, 'ca': 7, 'de': 8, 'es': 9, 'eu': 10, 'en': 11, 'fr': 12, 'eo': 13, 'it': 14, 'kab': 15, 'rw': 16, 'nl': 17, 'ru': 18, 'zh-CN': 19, 'br': 20, 'cv': 21, 'lt': 22, 'rm-vallader': 23, 'sv-SE': 24, 'lv': 25, 'lg': 26, 'id': 27, 'tr': 28, 'hsb': 29, 'ka': 30, 'sl': 31, 'ta': 32, 'ia': 33, 'zh-TW': 34, 'rm-sursilv': 35, 'mt': 36, 'el': 37, 'dv': 38, 'hu': 39, 'mn': 40, 'ro': 41, 'th': 42, 'sah': 43, 'ky': 44, 'zh-HK': 45, 'fy-NL': 46, 'uk': 47, 'fa': 48}
+# swi = {'et': 0, 'cs': 1, 'pt': 2, 'pl': 3, 'tt': 4, 'cy': 5, 'ar': 6, 'ca': 7, 'de': 8, 'es': 9, 'eu': 10, 'en': 11, 'fr': 12, 'eo': 13, 'it': 14, 'kab': 15, 'rw': 16, 'nl': 17, 'ru': 18, 'zh-CN': 19, 'br': 20, 'cv': 21, 'lt': 22, 'rm-vallader': 23, 'sv-SE': 24, 'lv': 25, 'lg': 26, 'id': 27, 'tr': 28, 'hsb': 29, 'ka': 30, 'sl': 31, 'ta': 32, 'ia': 33, 'zh-TW': 34, 'rm-sursilv': 35, 'mt': 36, 'el': 37, 'dv': 38, 'hu': 39, 'mn': 40, 'ro': 41, 'th': 42, 'sah': 43, 'ky': 44, 'zh-HK': 45, 'fy-NL': 46, 'uk': 47, 'fa': 48}
+# swi = {'et': 0, 'cs': 1, 'pt': 2, 'pl': 3, 'tt': 4, 'cy': 5, 'ar': 6, 'ca': 7, 'de': 8, 'es': 9, 'eu': 10, 'en': 11, 'fr': 12, 'eo': 13, 'it': 14, 'kab': 15, 'rw': 16, 'nl': 17, 'ru': 18, 'zh-CN': 19, 'dv': 20, 'hu': 21, 'mn': 22, 'ro': 23, 'th': 24, 'zh-HK': 25, 'fy-NL': 26, 'uk': 27, 'fa': 28}
+swi = {'et': 0, 'pt': 1, 'tt': 2, 'cy': 3, 'ar': 4, 'ca': 5, 'de': 6, 'es': 7, 'eu': 8, 'en': 9, 'fr': 10, 'eo': 11, 'it': 12, 'kab': 13, 'rw': 14, 'ru': 15, 'zh-CN': 16, 'lv': 17, 'id': 18, 'hsb': 19, 'sl': 20, 'ta': 21, 'rm-sursilv': 22, 'el': 23, 'hu': 24, 'mn': 25, 'th': 26, 'sah': 27, 'fy-NL': 28, 'fa': 29}
+
+
 
 class Data:
 
@@ -18,9 +22,18 @@ class Data:
         self.test_path = f'{self.path_to_data}/sub_pickles/test/'
         self.limit_train = 5000
         self.limit_test = 1250
-        self.NUM_LANGUAGES = 49
-        # self.switcher = {}
         self.switcher = swi
+        self.NUM_LANGUAGES = len(self.switcher)
+        self.white_list = list(self.switcher.keys())
+        # self.switcher = {}
+        # self.NUM_LANGUAGES = 49
+        # self.NUM_LANGUAGES = 29
+        # self.NUM_LANGUAGES = 30
+
+        # self.white_list = ['hsb', 'eo', 'rm-sursilv', 'de', 'fy-NL', 'tt', 'zh-CN', 'fr', 'lv', 'et', 'en', 'pt', 'cy',
+        #                    'ar', 'ca', 'kab', 'es', 'eu', 'it', 'id', 'ta', 'el', 'hu', 'mn', 'sah', 'fa', 'th', 'rw',
+        #                    'sl', 'ru']
+        # self.white_list = ['th', 'ro', 'mn', 'hu', 'dv', 'zh-HK', 'fy-NL', 'uk', 'fa', 'et', 'cs', 'pt', 'pl', 'tt', 'cy', 'ar', 'ca', 'de', 'en', 'eo', 'es', 'eu', 'fr', 'it', 'kab', 'nl', 'ru', 'rw', 'zh-CN']
 
     def init_data_test(self):
         pks_of_test = self.get_packs_tags(self.test_path)
@@ -53,6 +66,8 @@ class Data:
         for file in glob.glob(f'{path}*.pkl'):
             fname = os.path.basename(file)
             tag = fname.split('_')[0]
+            if not tag in self.white_list:
+              continue
             path_to_current = path + fname
             with open(path_to_current, 'rb') as f:
                 pack = pickle.load(f)
@@ -67,9 +82,6 @@ class Data:
         for pack in packs:
             tensors, tag = pack[0], pack[1]
             num = self.get_num_by_tag(tag)
-            # if tag in black_list:
-            #     amounts[num] = 1
-            #     continue
             if amounts[num] == limit:
                 continue
             for tensor in tensors:
@@ -79,8 +91,7 @@ class Data:
                 amounts[num] += 1
                 Y.append(num)
 
-        max_amount = max(amounts)
-        weights = [max_amount / amount for amount in amounts]
+        weights = [1 / amount for amount in amounts]
         return X, Y, weights, amounts
 
     def to_tensors(self, X, Y):
@@ -109,3 +120,9 @@ class Data:
 
     def get_y_test(self):
         return self.Y_test
+
+    def get_switcher(self):
+        return self.switcher
+
+    def get_num_language(self):
+        return self.NUM_LANGUAGES

@@ -1,6 +1,11 @@
 
 .idea
 
-trained_models
+
 /data/
 /results/
+/results1/
+/trained_models/
+
+/trained_models_old/
+/old/
