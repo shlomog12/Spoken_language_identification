@@ -4,7 +4,11 @@ from cnn_model_definition import Convolutional_Language_Identification
 
 
 NUM_LANGUAGE = 30
-rep = {0: 'et', 1: 'pt', 2: 'tt', 3: 'cy', 4: 'ar', 5: 'ca', 6: 'de', 7: 'es', 8: 'eu', 9: 'en', 10: 'fr', 11: 'eo', 12: 'it', 13: 'kab', 14: 'rw', 15: 'ru', 16: 'zh-CN', 17: 'lv', 18: 'id', 19: 'hsb', 20: 'sl', 21: 'ta', 22: 'rm-sursilv', 23: 'el', 24: 'hu', 25: 'mn', 26: 'th', 27: 'sah', 28: 'fy-NL', 29: 'fa'}
+rep = {0: 'Estonian', 1: 'Portuguese', 2: 'Tatar', 3: 'Welsh', 4: 'Arabic', 5: 'Catalan', 6: 'German', 7: 'Spanish', 8: 'Basque', 9: 'English', 10: 'French', 11: 'Esperanto', 12: 'Italian', 13: 'Kabyle', 14: 'Rwanda', 15: 'Russian', 16: 'Chinese', 17: 'Latvian', 18: 'Indonesian', 19: 'Sorbian', 20: 'Slovenian', 21: 'Tamil', 22: 'Romansh', 23: 'Greek', 24: 'Hungarian', 25: 'Mongolian', 26: 'Thai', 27: 'Sakha', 28: 'Frisian', 29: 'Persian'}
+
+# rep = {0: 'et', 1: 'pt', 2: 'tt', 3: 'cy', 4: 'ar', 5: 'ca', 6: 'de', 7: 'es', 8: 'eu', 9: 'en', 10: 'fr', 11: 'eo', 12: 'it', 13: 'kab', 14: 'rw', 15: 'ru', 16: 'zh-CN', 17: 'lv', 18: 'id', 19: 'hsb', 20: 'sl', 21: 'ta', 22: 'rm-sursilv', 23: 'el', 24: 'hu', 25: 'mn', 26: 'th', 27: 'sah', 28: 'fy-NL', 29: 'fa'}
+# recode = {'et': 'Estonian', 'pt': 'Portuguese', 'tt': 'Tatar', 'cy': 'Welsh', 'ar': 'Arabic', 'ca': 'Catalan', 'de': 'German', 'es': 'Spanish', 'eu': 'Basque', 'en': 'English', 'fr': 'French', 'eo': 'Esperanto', 'it': 'Italian', 'kab': 'Kabyle', 'rw': 'Rwanda', 'ru': 'Russian', 'zh-CN': 'Chinese', 'lv': 'Latvian', 'id': 'Indonesian', 'hsb': 'Sorbian', 'sl': 'Slovenian', 'ta': 'Tamil', 'rm-sursilv': 'Romansh', 'el': 'Greek', 'hu': 'Hungarian', 'mn': 'Mongolian', 'th': 'Thai', 'sah': 'Sakha', 'fy-NL': 'Frisian', 'fa': 'Persian'}
+
 MODEL_PATH = 'best_model.pth'
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -68,8 +72,11 @@ class Recording_language_classification:
         for i in range(len(top_k)):
             ans[top_k[i][0]] = (top_k[i][1], result_relative_to_top_k[i][1])
         str_of_res = []
+        dict_place = {1:'First',2:'Second',3: 'Third'}
+        j = 1
         for k, v in ans.items():
-            str_of_res.append(f'For the {k} language the result is {v[0]} out of all and {v[1]} out of the top_3')
+            str_of_res.append(f'{dict_place[j]} place: the {k} language the result is {round(v[0]*100,3)} out of all and {round(v[1]*100,3)} out of the top 3')
+            j+=1
         final_answer = "\n".join(str_of_res)
         return final_answer
 
