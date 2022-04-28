@@ -1,20 +1,23 @@
 import pickle
 
-from ConvNet import ConvNet
+
 import torch
 import numpy as np
-# swi = {'et': 0, 'pt': 1, 'tt': 2, 'cy': 3, 'ar': 4, 'ca': 5, 'de': 6, 'es': 7, 'eu': 8, 'en': 9, 'fr': 10, 'eo': 11, 'it': 12, 'kab': 13, 'rw': 14, 'ru': 15, 'zh-CN': 16, 'lv': 17, 'id': 18, 'hsb': 19, 'sl': 20, 'ta': 21, 'rm-sursilv': 22, 'el': 23, 'hu': 24, 'mn': 25, 'th': 26, 'sah': 27, 'fy-NL': 28, 'fa': 29}
+
+from cnn_model_definition import Convolutional_Language_Identification
+
 rep = {0: 'et', 1: 'pt', 2: 'tt', 3: 'cy', 4: 'ar', 5: 'ca', 6: 'de', 7: 'es', 8: 'eu', 9: 'en', 10: 'fr', 11: 'eo', 12: 'it', 13: 'kab', 14: 'rw', 15: 'ru', 16: 'zh-CN', 17: 'lv', 18: 'id', 19: 'hsb', 20: 'sl', 21: 'ta', 22: 'rm-sursilv', 23: 'el', 24: 'hu', 25: 'mn', 26: 'th', 27: 'sah', 28: 'fy-NL', 29: 'fa'}
 
 
 NUM_LANGUAGE = 30
-path_to_sample = 'data/sub_pickles/test/en_100.pkl'
-TRAINED_MODEL_PATH = 'trained_models/convN/13_4_2022_22_13_00/ConvNet_dialect_w-epoch_10.pth'
+path_to_sample = '../data/sub_pickles/test/en_100.pkl'
+TRAINED_MODEL_PATH = '../trained_models/27-04-2022_23-10-37/train_dialect_with_w_dolev44_-epoch_10.pth'
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def get_model():
-    model = ConvNet(NUM_LANGUAGE).to(device)
+    # model = ConvNet(NUM_LANGUAGE).to(device)
+    model = Convolutional_Language_Identification(NUM_LANGUAGE).to(device)
     model.load_state_dict(torch.load(TRAINED_MODEL_PATH, map_location=torch.device('cpu')))
     return model
 
@@ -52,17 +55,6 @@ def get_Y(sample):
 
 
 
-
-
-    # with torch.no_grad():
-    #     model.eval()
-        # Y = model(sample.to(device))
-
-
-
-
-
-
 def get_top_k_res(res, k):
     arr = np.array(res)
     top_k = arr.argsort(axis=0)[-k:]
@@ -71,22 +63,6 @@ def get_top_k_res(res, k):
         m = top_k[j]
         arr2.append((rep[m], round(arr[m], 4)))
     return arr2
-
-
-
-
-
-# def get_top_k_res(res, k):
-#     new_mat = []
-#     for i in range(len(mat_res)):
-#         arr = np.array(mat_res[i])
-#         top_k = arr.argsort(axis=0)[-k:]
-#         arr2 = []
-#         for j in reversed(range(len(top_k))):
-#             m = top_k[j]
-#             arr2.append((rep[m],round(arr[m], 4)))
-#         new_mat.append(arr2)
-#     return new_mat
 
 
 def get_res_in_k(top_k):
@@ -105,6 +81,7 @@ def get_language_by_vector(sample):
     return top_k, res_in_k
 
 def main():
+
     sample = get_packs_tags()
     top_k ,res_in_k= get_language_by_vector(sample)
     # print(top_k)
