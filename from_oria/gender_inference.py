@@ -41,11 +41,11 @@ def print_results(y):
 
 
 if __name__ == '__main__':
-    gender_model = torch.load("36gender_Model-epoch_36_Weights.pth", map_location=torch.device("cpu"))
-    gender_model.eval()
+    # gender_model = torch.load("36gender_Model-epoch_36_Weights.pth", map_location=torch.device("cpu"))
+    # gender_model.eval()
 
     with torch.inference_mode():
-        tor = inference(file_path="dvir.wav")
+        tor = inference(file_path="../to_adi/audio_files/eng_f1.wav")
         embedding, _ = wav_model(tor)
         embedding = embedding.unsqueeze(0)
         embedding = Norm(embedding)
