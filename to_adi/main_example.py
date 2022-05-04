@@ -20,3 +20,15 @@ if __name__ == '__main__':
     main()
 
 
+bundle = torchaudio.pipelines.WAV2VEC2_ASR_BASE_960H
+model = bundle.get_model()
+def get_sample(lang):
+    dataset = load_dataset("common_voice", lang, split="train", streaming=True)
+    dataset = dataset.cast_column("audio", datasets.Audio(sampling_rate=16_000))
+    dataset_iter = iter(dataset)
+    data = next(dataset_iter)
+    array_of_wav = data["audio"]["array"]
+    sub_array = array_of_wav[0:48000]
+    tensor_data = torch.tensor([sub_array])
+    sample, _ = model(tensor_data)
+    return sample
