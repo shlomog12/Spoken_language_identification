@@ -117,6 +117,3 @@ class Recording_language_classification:
 
         final_answer = "\n".join(str_of_res)
         return final_answer
-
-
-#print(Recording_language_classification.get_string_of_ans("/home/adi/python/DeepLearningSoundUI-master/recording.wav",'/home/adi/python/DeepLearningSoundUI-master/model/model_language_identification.pth'))
