@@ -8,7 +8,6 @@ import numpy as np
 from sklearn.metrics import f1_score
 
 import math_func as f
-from ConvNet import ConvNet
 from preprocessing.Data import Data
 from cnn_model_definition import Convolutional_Language_Identification
 
@@ -18,14 +17,14 @@ x_test = data.get_x_test()
 y_test = data.get_y_test()
 size_of_test = len(y_test)
 
-TRAINED_MODEL_PATH = 'trained_models/aaaa/Convolutional_Speaker_Identification_Log_Softmax_Model-epoch_10.pth'
+TRAINED_MODEL_PATH = 'trained_models/08-05-2022_22-27-58/train_dialect_with_w_dolev44_-epoch_9.pth'
 print(TRAINED_MODEL_PATH )
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# model = ConvNet(data.get_num_language()).to(device)
+
 model = Convolutional_Language_Identification(data.get_num_language()).to(device)
 model.load_state_dict(torch.load(TRAINED_MODEL_PATH, map_location=torch.device('cpu')))
-# model = torch.load(TRAINED_MODEL_PATH, map_location='cpu')
+
 
 final_accuracy = np.array([0, 0, 0, 0], dtype=float)
 final_f_score = np.array([0, 0], dtype=float)
@@ -43,8 +42,7 @@ if not os.path.isdir(dir_of_res_path):
 
 batch_size = 16
 
-# size_l = 49
-# size_l = 29
+
 size_l = data.get_num_language()
 mat_res = [[0 for i in range(size_l)] for j in range(size_l)]
 
@@ -80,11 +78,6 @@ results_df = pd.DataFrame([], columns=['top_1_test_acc', 'top_2_test_acc', 'top_
 results_df.loc[len(results_df)] = new_final_accuracy + [final_f_score[0],final_f_score[1]]
 results_df.to_excel(dir_of_res_path + '/final_report.xlsx')
 
-
-
-# swi = {'et': 0, 'cs': 1, 'pt': 2, 'pl': 3, 'tt': 4, 'cy': 5, 'ar': 6, 'ca': 7, 'de': 8, 'es': 9, 'eu': 10, 'en': 11, 'fr': 12, 'eo': 13, 'it': 14, 'kab': 15, 'rw': 16, 'nl': 17, 'ru': 18, 'zh-CN': 19, 'br': 20, 'cv': 21, 'lt': 22, 'rm-vallader': 23, 'sv-SE': 24, 'lv': 25, 'lg': 26, 'id': 27, 'tr': 28, 'hsb': 29, 'ka': 30, 'sl': 31, 'ta': 32, 'ia': 33, 'zh-TW': 34, 'rm-sursilv': 35, 'mt': 36, 'el': 37, 'dv': 38, 'hu': 39, 'mn': 40, 'ro': 41, 'th': 42, 'sah': 43, 'ky': 44, 'zh-HK': 45, 'fy-NL': 46, 'uk': 47, 'fa': 48}
-# swi = {'et': 0, 'cs': 1, 'pt': 2, 'pl': 3, 'tt': 4, 'cy': 5, 'ar': 6, 'ca': 7, 'de': 8, 'es': 9, 'eu': 10, 'en': 11, 'fr': 12, 'eo': 13, 'it': 14, 'kab': 15, 'rw': 16, 'nl': 17, 'ru': 18, 'zh-CN': 19, 'dv': 20, 'hu': 21, 'mn': 22, 'ro': 23, 'th': 24, 'zh-HK': 25, 'fy-NL': 26, 'uk': 27, 'fa': 28}
-# swi = {'et': 0, 'pt': 1, 'tt': 2, 'cy': 3, 'ar': 4, 'ca': 5, 'de': 6, 'es': 7, 'eu': 8, 'en': 9, 'fr': 10, 'eo': 11, 'it': 12, 'kab': 13, 'rw': 14, 'ru': 15, 'zh-CN': 16, 'lv': 17, 'id': 18, 'hsb': 19, 'sl': 20, 'ta': 21, 'rm-sursilv': 22, 'el': 23, 'hu': 24, 'mn': 25, 'th': 26, 'sah': 27, 'fy-NL': 28, 'fa': 29}
 swi = data.get_switcher()
 rep = {}
 for k, v in swi.items():

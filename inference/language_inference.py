@@ -4,6 +4,7 @@ import numpy as np
 from cnn_model_definition import Convolutional_Language_Identification
 import torchaudio
 
+
 NUM_LANGUAGE = 30
 SAMPLE_RATE = 16000
 rep = {0: 'Estonian', 1: 'Portuguese', 2: 'Tatar', 3: 'Welsh', 4: 'Arabic', 5: 'Catalan', 6: 'German', 7: 'Spanish', 8: 'Basque', 9: 'English', 10: 'French', 11: 'Esperanto', 12: 'Italian', 13: 'Kabyle', 14: 'Rwanda', 15: 'Russian', 16: 'Chinese', 17: 'Latvian', 18: 'Indonesian', 19: 'Sorbian', 20: 'Slovenian', 21: 'Tamil', 22: 'Romansh', 23: 'Greek', 24: 'Hungarian', 25: 'Mongolian', 26: 'Thai', 27: 'Sakha', 28: 'Frisian', 29: 'Persian'}
@@ -74,8 +75,9 @@ class Recording_language_classification:
     
         if sr != bundle.sample_rate:
             waveform = torchaudio.functional.resample(waveform, sr, bundle.sample_rate)
-
         waveform = waveform.to(device)
+
+        # waveform = waveform[:, :SAMPLE_RATE*3]
 
         return waveform
     @classmethod   
@@ -108,11 +110,11 @@ class Recording_language_classification:
         for i in range(len(top_k)):
             ans[top_k[i][0]] = (top_k[i][1], result_relative_to_top_k[i][1])
         str_of_res = []
-        dict_place = {1:'First',2:'Second',3: 'Third'}
-        j = 1
+        str_of_res.append("Language:".ljust(10) + " | Total: |  For k:    ")
+        str_of_res.append("___________|________|_________")
         for k, v in ans.items():
-            str_of_res.append(f'{dict_place[j]} place: the {k} language the result is {round(v[0]*100,3)} out of all and {round(v[1]*100,3)} out of the top 3')
-            j+=1
+            str_of_res.append(f'{k.ljust(10)} : {round(v[0]*100,3)}  |  {round(v[1]*100,3)}')
+
         final_answer = "\n".join(str_of_res)
         return final_answer
 
