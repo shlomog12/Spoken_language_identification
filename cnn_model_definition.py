@@ -9,7 +9,7 @@ class Convolutional_Language_Identification(nn.Module):
         super().__init__()
         # Hyper parameters
         self.epochs = 30
-        self.batch_size = 44
+        self.batch_size = 20
         self.learning_rate = 0.0001
         # self.learning_rate = 0.00001
         # self.dataset = dataset
