@@ -11,9 +11,8 @@ class Convolutional_Language_Identification(nn.Module):
         self.epochs = 30
         self.batch_size = 20
         self.learning_rate = 0.0001
-        # self.learning_rate = 0.00001
-        # self.dataset = dataset
-        # Model Architecture
+        
+        
         self.first_conv = nn.Conv2d(1, 96, kernel_size=(5, 5), padding=1)
         self.first_bn = nn.BatchNorm2d(96)
         self.first_polling = nn.MaxPool2d(kernel_size=(3, 3), stride=(2, 2))
