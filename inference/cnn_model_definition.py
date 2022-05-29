@@ -1,8 +1,5 @@
 
 from torch import nn
-# NUM_OF_LANGUAGES = 49
-# NUM_OF_LANGUAGES = 29
-# NUM_OF_LANGUAGES = 30
 import torch
 
 DROP_OUT = 0.5
@@ -10,7 +7,6 @@ DIMENSION = 512 * 300
 DROP_OUT = 0.5
 
 
-# class ConvNet(nn.Module):
 class Convolutional_Language_Identification(nn.Module):
 
     def __init__(self, num_of_classes):
@@ -19,8 +15,7 @@ class Convolutional_Language_Identification(nn.Module):
         self.epochs = 45
         self.batch_size = 44
         self.learning_rate = 0.0001
-        # self.dataset = dataset
-        # Model Architecture
+        
         self.first_conv = nn.Conv2d(1, 96, kernel_size=(5, 5), padding=1)
         self.first_bn = nn.BatchNorm2d(96)
         self.first_polling = nn.MaxPool2d(kernel_size=(3, 3), stride=(2, 2))
