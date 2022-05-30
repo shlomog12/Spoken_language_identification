@@ -25,14 +25,13 @@ num_language= data.get_num_language()
 
 ROOT_PATH = '/content/drive/MyDrive/Spoken-language-identification/'
 # ROOT_PATH = ''
-# DATA_3_LANG_PATH = ROOT_PATH+'data/pickles/db_3_langs.pkl'
+
 ALL_DATA_PATH = ROOT_PATH + 'data/pickles/total_big.pkl'
 TRAINING_RESULTS_PATH = ROOT_PATH + 'results/'
 
 print('Start training:')
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# model = ConvNet(num_languag).to(device)
 model = Convolutional_Language_Identification(num_languag).to(device)
 # Convolutional_Language_Identification
 
